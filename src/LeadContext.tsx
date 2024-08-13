@@ -7,6 +7,7 @@ import React, {
   type ReactNode,
 } from "react";
 import { match } from "ts-pattern";
+import { produce } from "immer";
 
 type Step = "home" | "first" | "second" | "third";
 
@@ -42,15 +43,27 @@ const setStep =
     match(step)
       .with("home", () => {
         navigate({ to: "/first" });
-        setLead({ ...lead, step: "first" });
+        setLead(
+          produce(lead, (draft) => {
+            draft.step = "first";
+          })
+        );
       })
       .with("first", () => {
         if (lead.firstName === undefined) {
           navigate({ to: "/first" });
-          setLead({ ...lead, step: "first" });
+          setLead(
+            produce(lead, (draft) => {
+              draft.step = "first";
+            })
+          );
         } else {
           navigate({ to: "/second" });
-          setLead({ ...lead, step: "second" });
+          setLead(
+            produce(lead, (draft) => {
+              draft.step = "second";
+            })
+          );
         }
       })
       .with("second", () => {})
