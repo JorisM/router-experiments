@@ -1,0 +1,22 @@
+{
+  "name": "state-example",
+  "version": "1.0.0",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@tanstack/react-router": "^1.47.1",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@tanstack/router-devtools": "^1.47.1",
+    "@tanstack/router-plugin": "^1.47.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
+  }
+}
