@@ -13,7 +13,7 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as FirstImport } from './routes/first'
+import { Route as FirstLaxyImport } from './routes/first.laxy'
 
 // Create Virtual Routes
 
@@ -27,15 +27,15 @@ const SecondLazyRoute = SecondLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/second.lazy').then((d) => d.Route))
 
-const FirstRoute = FirstImport.update({
-  path: '/first',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+
+const FirstLaxyRoute = FirstLaxyImport.update({
+  path: '/first/laxy',
+  getParentRoute: () => rootRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -48,18 +48,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/first': {
-      id: '/first'
-      path: '/first'
-      fullPath: '/first'
-      preLoaderRoute: typeof FirstImport
-      parentRoute: typeof rootRoute
-    }
     '/second': {
       id: '/second'
       path: '/second'
       fullPath: '/second'
       preLoaderRoute: typeof SecondLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/first/laxy': {
+      id: '/first/laxy'
+      path: '/first/laxy'
+      fullPath: '/first/laxy'
+      preLoaderRoute: typeof FirstLaxyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -69,8 +69,8 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
-  FirstRoute,
   SecondLazyRoute,
+  FirstLaxyRoute,
 })
 
 /* prettier-ignore-end */
@@ -82,18 +82,18 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/first",
-        "/second"
+        "/second",
+        "/first/laxy"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
-    "/first": {
-      "filePath": "first.tsx"
-    },
     "/second": {
       "filePath": "second.lazy.tsx"
+    },
+    "/first/laxy": {
+      "filePath": "first.laxy.tsx"
     }
   }
 }
