@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { type NavigateFn, useNavigate } from "@tanstack/react-router";
 import React, {
   createContext,
   useContext,
@@ -6,8 +6,9 @@ import React, {
   useEffect,
   type ReactNode,
 } from "react";
+import { match } from "ts-pattern";
 
-type Step = "first" | "second" | "third";
+type Step = "home" | "first" | "second" | "third";
 
 type Lead = {
   firstName?: string;
@@ -18,6 +19,7 @@ type Lead = {
 type LeadContextType = {
   lead: Lead;
   setLead: (lead: Lead) => void;
+  next: (lead: Lead) => void;
 };
 
 const LeadContext = createContext<LeadContextType | undefined>(undefined);
@@ -34,31 +36,40 @@ const defaultLead: Lead = {
   step: "first",
 };
 
-const getStep = (step: Step) => (lead: Lead) => {
-  switch (step) {
-    case "first":
-      if (lead.firstName === undefined) {
-        return "first";
-      }
-      return "second";
-    default:
-      return step;
-  }
-};
+const setStep =
+  (step: Step, setLead: (lead: Lead) => void, navigate: NavigateFn) =>
+  (lead: Lead) => {
+    match(step)
+      .with("home", () => {
+        navigate({ to: "/first" });
+        setLead({ ...lead, step: "first" });
+      })
+      .with("first", () => {
+        if (lead.firstName === undefined) {
+          navigate({ to: "/first" });
+          setLead({ ...lead, step: "first" });
+        } else {
+          navigate({ to: "/second" });
+          setLead({ ...lead, step: "second" });
+        }
+      })
+      .with("second", () => {})
+      .with("third", () => {
+        navigate({ to: "/" });
+        setLead(defaultLead);
+      })
+      .exhaustive();
+  };
 
 export const LeadProvider = ({ children }: { children: ReactNode }) => {
   const [lead, setLead] = useState<Lead>(defaultLead);
   const currentStep = lead.step;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const nextStep = getStep(currentStep)(lead);
-
-    navigate({ to: `/${nextStep}` });
-  }, [currentStep, navigate, lead]);
+  const nextStep = setStep(currentStep, setLead, navigate);
 
   return (
-    <LeadContext.Provider value={{ lead, setLead }}>
+    <LeadContext.Provider value={{ lead, setLead, next: nextStep }}>
       {children}
     </LeadContext.Provider>
   );

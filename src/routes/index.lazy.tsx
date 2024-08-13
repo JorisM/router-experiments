@@ -8,11 +8,11 @@ export const Route = createLazyFileRoute("/")({
 });
 
 function Index() {
-  const { lead, setLead } = useLead();
+  const { lead, next } = useLead();
   return (
     <div className="p-2">
       <h3>Welcome Home!</h3>
-      <button type="button" onClick={() => setLead({ ...lead, step: "first" })}>
+      <button type="button" onClick={() => next(lead)}>
         Next
       </button>
     </div>
