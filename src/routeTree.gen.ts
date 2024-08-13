@@ -13,11 +13,11 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as FirstLaxyImport } from './routes/first.laxy'
 
 // Create Virtual Routes
 
 const SecondLazyImport = createFileRoute('/second')()
+const FirstLazyImport = createFileRoute('/first')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
@@ -27,15 +27,15 @@ const SecondLazyRoute = SecondLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/second.lazy').then((d) => d.Route))
 
+const FirstLazyRoute = FirstLazyImport.update({
+  path: '/first',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/first.lazy').then((d) => d.Route))
+
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
-
-const FirstLaxyRoute = FirstLaxyImport.update({
-  path: '/first/laxy',
-  getParentRoute: () => rootRoute,
-} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -48,18 +48,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/first': {
+      id: '/first'
+      path: '/first'
+      fullPath: '/first'
+      preLoaderRoute: typeof FirstLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/second': {
       id: '/second'
       path: '/second'
       fullPath: '/second'
       preLoaderRoute: typeof SecondLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/first/laxy': {
-      id: '/first/laxy'
-      path: '/first/laxy'
-      fullPath: '/first/laxy'
-      preLoaderRoute: typeof FirstLaxyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -69,8 +69,8 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren({
   IndexLazyRoute,
+  FirstLazyRoute,
   SecondLazyRoute,
-  FirstLaxyRoute,
 })
 
 /* prettier-ignore-end */
@@ -82,18 +82,18 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/second",
-        "/first/laxy"
+        "/first",
+        "/second"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
+    "/first": {
+      "filePath": "first.lazy.tsx"
+    },
     "/second": {
       "filePath": "second.lazy.tsx"
-    },
-    "/first/laxy": {
-      "filePath": "first.laxy.tsx"
     }
   }
 }
