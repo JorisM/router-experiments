@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import React, { StrictMode, createContext, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 
@@ -15,7 +15,6 @@ declare module "@tanstack/react-router" {
   }
 }
 
-// Render the app
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {

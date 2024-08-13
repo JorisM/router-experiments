@@ -17,9 +17,15 @@ import { Route as FirstImport } from './routes/first'
 
 // Create Virtual Routes
 
+const SecondLazyImport = createFileRoute('/second')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const SecondLazyRoute = SecondLazyImport.update({
+  path: '/second',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/second.lazy').then((d) => d.Route))
 
 const FirstRoute = FirstImport.update({
   path: '/first',
@@ -49,12 +55,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FirstImport
       parentRoute: typeof rootRoute
     }
+    '/second': {
+      id: '/second'
+      path: '/second'
+      fullPath: '/second'
+      preLoaderRoute: typeof SecondLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ IndexLazyRoute, FirstRoute })
+export const routeTree = rootRoute.addChildren({
+  IndexLazyRoute,
+  FirstRoute,
+  SecondLazyRoute,
+})
 
 /* prettier-ignore-end */
 
@@ -65,7 +82,8 @@ export const routeTree = rootRoute.addChildren({ IndexLazyRoute, FirstRoute })
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/first"
+        "/first",
+        "/second"
       ]
     },
     "/": {
@@ -73,6 +91,9 @@ export const routeTree = rootRoute.addChildren({ IndexLazyRoute, FirstRoute })
     },
     "/first": {
       "filePath": "first.tsx"
+    },
+    "/second": {
+      "filePath": "second.lazy.tsx"
     }
   }
 }
