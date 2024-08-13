@@ -79,6 +79,11 @@ export const LeadProvider = ({ children }: { children: ReactNode }) => {
   const currentStep = lead.step;
   const navigate = useNavigate();
 
+  // at start, navigate to home. call function to set correct step based on fetched lead here.
+  useEffect(() => {
+    navigate({ to: "/" });
+  }, [navigate]);
+
   const nextStep = setStep(currentStep, setLead, navigate);
 
   return (
